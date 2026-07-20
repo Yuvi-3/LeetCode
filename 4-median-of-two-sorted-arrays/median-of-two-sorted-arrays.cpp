@@ -1,0 +1,42 @@
+#include <vector>
+#include <algorithm>
+#include <climits>
+
+class Solution {
+public:
+    double findMedianSortedArrays(std::vector<int>& nums1, std::vector<int>& nums2) {
+        if (nums1.size() > nums2.size()) {
+            return findMedianSortedArrays(nums2, nums1);
+        }
+
+        int m = nums1.size();
+        int n = nums2.size();
+        int left = 0, right = m;
+        int halfLen = (m + n + 1) / 2;
+
+        while (left <= right) {
+            int i = (left + right) / 2;
+            int j = halfLen - i;
+
+            int nums1Left = (i == 0) ? INT_MIN : nums1[i - 1];
+            int nums1Right = (i == m) ? INT_MAX : nums1[i];
+            int nums2Left = (j == 0) ? INT_MIN : nums2[j - 1];
+            int nums2Right = (j == n) ? INT_MAX : nums2[j];
+
+            if (nums1Left <= nums2Right && nums2Left <= nums1Right) {
+                if ((m + n) % 2 == 1) {
+                    return std::max(nums1Left, nums2Left);
+                } else {
+                    return (std::max(nums1Left, nums2Left) +
+                            std::min(nums1Right, nums2Right)) / 2.0;
+                }
+            } else if (nums1Left > nums2Right) {
+                right = i - 1;
+            } else {
+                left = i + 1;
+            }
+        }
+
+        return 0.0;
+    }
+};
